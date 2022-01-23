@@ -39,7 +39,6 @@ def gsat(kb,maxTries,maxFlips):
     binaryvalues=[]#μεταβλητή για να κρατάει boolean τιμές στις θέσεις τον λεκτικών
     mincost=l#μεταβλητή για να κρατάει το μικρότερο κόστος των κινήσεων
     breakcondition=0
-    data=[]#πίνακας που κρατάει το αποτέλεσμα της πρότασης
 
     for i in range(maxTries): #max προσπάθειες
         if breakcondition == 1:
@@ -47,8 +46,7 @@ def gsat(kb,maxTries,maxFlips):
         for i in range(p):#αναθέτουμε random bool τιμές
             binaryvalues.append(bool(random.getrandbits(1)))
         print(binaryvalues)
-        data=[]
-
+        data=[]#πίνακας που κρατάει το αποτέλεσμα της πρότασης
         for i in range(maxFlips):
             tmpointer=[] #μεταβλητή που έχει δείκτη/ες από για τις αλλαγές με το μικρότερο κόστος
             tmplist=[] #λίστα για να κρατάει τα κόστη των κινήσεων
@@ -79,18 +77,21 @@ def gsat(kb,maxTries,maxFlips):
                 print("Congrats every sentence in the KB is True ")
                 breakcondition=1
                 break
+            if i == maxFlips-1:
+                data.append(data_structure(characters, kb, binaryvalues))
+                print(data)
+                print("No solution found,need to add new bool values")
             print("--------")
+        if i == maxTries-1:
+            print("No solution can be found through GSAT moving on to resolution.")
 
 
 def main():
     kb, characters = ckb.readKnowledgeBase()
-    for i in kb:
-        print(i)
     gsat(kb,10,20)
 
 
 
-print("hi")
 
 
 
