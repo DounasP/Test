@@ -69,7 +69,7 @@ def retKBcharacteristics():
     kbfile.close()
     p, c, l = characteristics.split(',')
 
-    return int(p), int(c)+1, int(l)
+    return int(p), int(c), int(l)
 
 
 
@@ -81,7 +81,7 @@ def createKnowledgeBase(p, c, l):
         Επίσης η βάση γνώσης γράφεται στο αρχειο knowladgeBase.txt"""
 
     kb = []
-    availableCharacters = "abc"
+    availableCharacters =returnRandomCharacters(p)
     for i in range(c+1):
         sentance = ''
         while sentance in kb:
@@ -99,4 +99,4 @@ def createKnowledgeBase(p, c, l):
 
     knowledgeBaseFile.close()
     return kb
-#createKnowledgeBase(3, 5, 3)
+

@@ -33,35 +33,38 @@ def flip(values,i):
         binaryvalues[i] = True
 
 
-def gsat(kb,maxTries,maxFlips):
+def gsat(maxTries,maxFlips):
     kb, characters = ckb.readKnowledgeBase()
     p, c, l = ckb.retKBcharacteristics()
-    binaryvalues=[]#μεταβλητή για να κρατάει boolean τιμές στις θέσεις τον λεκτικών
-    mincost=l#μεταβλητή για να κρατάει το μικρότερο κόστος των κινήσεων
+
     breakcondition=0
 
-    for i in range(maxTries): #max προσπάθειες
-        if breakcondition == 1:
-            break
+    for j in range(maxTries): #max προσπάθειες
+        binaryvalues = []  # μεταβλητή για να κρατάει boolean τιμές στις θέσεις τον λεκτικών
+
         for i in range(p):#αναθέτουμε random bool τιμές
             binaryvalues.append(bool(random.getrandbits(1)))
         print(binaryvalues)
         data=[]#πίνακας που κρατάει το αποτέλεσμα της πρότασης
-        for i in range(maxFlips):
-            tmpointer=[] #μεταβλητή που έχει δείκτη/ες από για τις αλλαγές με το μικρότερο κόστος
-            tmplist=[] #λίστα για να κρατάει τα κόστη των κινήσεων
+
+        for k in range(maxFlips):
+            mincost=c   #μεταβλητή για να κρατάει το μικρότερο κόστος των κινήσεων
+            tmpointer=[]     #μεταβλητή που έχει δείκτη/ες από για τις αλλαγές με το μικρότερο κόστος
+            tmplist=[]       #λίστα για να κρατάει τα κόστη των κινήσεων
             data.append(data_structure(characters,kb,binaryvalues))
-            for i in range(p):#συνάρτηση για να βρει τα μέγιστο κόστος
-                values=binaryvalues.copy()# το copy χρειάζεται γιατί χωρίς αυτό ο πίνακας values παίρνει τις τιμές του binaryvalues και λειτουργεί σαν δείκτης για τον binary
+
+            for i in range(p):  #συνάρτηση για να βρει τα μέγιστο κόστος
+                values=binaryvalues.copy()  # το copy χρειάζεται γιατί χωρίς αυτό ο πίνακας values παίρνει τις τιμές του binaryvalues και λειτουργεί σαν δείκτης για τον binary
                 flip(values,i)
-                tmplist.append(data_structure(characters,kb,values)[-1])#αποθηκεύεται το κόστος της κάθε αλλαγής μέσα στην λίστα
+                tmplist.append(data_structure(characters,kb,values)[-1])    #αποθηκεύεται το κόστος της κάθε αλλαγής μέσα στην λίστα
             print("λίστα με τα κόστη",tmplist)
-            for i in tmplist: #συνάρτηση για να βρίσκει το μικρότερο κόστος
+
+            for i in tmplist:   #συνάρτηση για να βρίσκει το μικρότερο κόστος
                 if(i < mincost):
                     mincost = i
             print("κοστος",mincost)
 
-            for i in range(len(tmplist)):#λίστα για να κρατάει τους δείκτες των τιμών όπου η αλλαγή τους έχει το μικρότερο κόστος
+            for i in range(len(tmplist)):   #λίστα για να κρατάει τους δείκτες των τιμών όπου η αλλαγή τους έχει το μικρότερο κόστος
                 if(tmplist[i] == mincost):
                     tmpointer.append(i)
             print("δείκτες",tmpointer)
@@ -69,26 +72,45 @@ def gsat(kb,maxTries,maxFlips):
             if(len(tmpointer)>1):
                 flip(binaryvalues,tmpointer[random.randint(0,len(tmpointer)-1)])
             else:
+                print(len(tmpointer))
                 print("tmpointer",tmpointer[0])
                 flip(binaryvalues,tmpointer[0])
             if mincost == 0:
                 data.append(data_structure(characters, kb, binaryvalues))
                 print(data)
                 print("Congrats every sentence in the KB is True ")
-                breakcondition=1
-                break
-            if i == maxFlips-1:
+                return True
+            if k == maxFlips-1:
                 data.append(data_structure(characters, kb, binaryvalues))
                 print(data)
                 print("No solution found,need to add new bool values")
+
             print("--------")
-        if i == maxTries-1:
+
+
+        if j == maxTries-1:
             print("No solution can be found through GSAT moving on to resolution.")
+    return False
 
 
 def main():
-    kb, characters = ckb.readKnowledgeBase()
-    gsat(kb,10,20)
+    ckb.createKnowledgeBase(4, 20, 4)
+    p, c, l = ckb.retKBcharacteristics()
+    while(1):
+        newcharacter=input("dwse xaraktira re arxidi\n")
+        c=c+1
+        kb, characters = ckb.readKnowledgeBase()
+        kb.insert(0,newcharacter.swapcase())
+        if gsat(10,20):
+            knowledgeBaseFile = open('knowledgeBase.txt', 'a')
+            knowledgeBaseFile.write(newcharacter)
+            knowledgeBaseFile.close()
+        else:
+            c=c-1
+            kb.pop(0)
+        tmpchar=input("Shall we continue sir? (y/n)")
+        if tmpchar == "n":
+            break
 
 
 
